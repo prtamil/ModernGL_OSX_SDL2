@@ -36,18 +36,24 @@ int main()
 		return 1;
 	}
 
-	SDL_GL_MakeCurrent(win, contxt);
 
-
-	const float trivert[] = { //positions
-		-1.0f, -1.0f, 0.0f, 1.0f,
-         1.0f, -1.0f, 0.0f, 1.0f,
-         1.0f,  1.0f, 0.0f, 1.0f,
-		//colors
-		1.0f, 0.0f, 0.0f, 1.0f,
-		0.0f, 1.0f, 0.0f, 1.0f,
-		0.0f, 0.0f, 1.0f, 1.0f,
+	const float vertices[] = { //positions
+        -0.8f, 0.8f,
+        0.8f, 0.8f,
+        -0.8f, -0.8f,
+        0.8f, -0.8f
      };
+    const float colors[] = {
+        1,0,0,1,
+        0,1,0,1,
+        0,0,1,1,
+        1,1,1,1
+    };
+
+    short indices[] = {
+        0,1,2,
+        1,2,3
+    };
 
 	GLuint shader_program;
 	shader_program = shader_build_program("vert.glsl", "frag.glsl");
@@ -61,14 +67,25 @@ int main()
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 
-	GLuint trivbo;
-	glGenBuffers(1, &trivbo);
-	glBindBuffer(GL_ARRAY_BUFFER, trivbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(trivert), trivert, GL_STATIC_DRAW);
+	GLuint vboVert;
+	glGenBuffers(1, &vboVert);
+	glBindBuffer(GL_ARRAY_BUFFER, vboVert);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
+
+
+    GLuint vboCol;
+    glGenBuffers(1, &vboCol);
+    glBindBuffer(GL_ARRAY_BUFFER, vboCol);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*)48);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, 0);
+
+    GLuint ebo;
+    glGenBuffers(1,&ebo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
@@ -94,7 +111,7 @@ int main()
 		//drawing code 
 		glUseProgram(shader_program);
 		glBindVertexArray(vao);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0);
 		glBindVertexArray(0);
 		glUseProgram(0);
 
@@ -103,7 +120,7 @@ int main()
 	}
 
 	//cleanup
-	glDeleteBuffers(1, &trivbo);
+	//glDeleteBuffers(1, &trivbo);
 	glDeleteVertexArrays(1, &vao);
 	glDeleteProgram(shader_program);
 
