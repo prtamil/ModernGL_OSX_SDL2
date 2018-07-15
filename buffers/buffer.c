@@ -28,7 +28,7 @@ int main()
 		return 0;
 	}
 
-	const unsigned char *version = glGetString(GL_VERSION);
+    const unsigned char *version = glGetString(GL_VERSION);
     printf("VER -> %s\n",version);
 	if(version == NULL)
 	{
@@ -36,17 +36,14 @@ int main()
 		return 1;
 	}
 
-	SDL_GL_MakeCurrent(win, contxt);
-
 
 	const float trivert[] = { //positions
-		-1.0f, -1.0f, 0.0f, 1.0f,
-         1.0f, -1.0f, 0.0f, 1.0f,
-         1.0f,  1.0f, 0.0f, 1.0f,
-		//colors
-		1.0f, 0.0f, 0.0f, 1.0f,
-		0.0f, 1.0f, 0.0f, 1.0f,
-		0.0f, 0.0f, 1.0f, 1.0f,
+		-1.0f, -1.0f, 0.0f, 1.0f, //pos (0,4,8,12)
+		1.0f, 0.0f, 0.0f, 1.0f,   //color(16,20,24,28)
+         1.0f, -1.0f, 0.0f, 1.0f, //pos  (32,36,40,44)
+		0.0f, 1.0f, 0.0f, 1.0f,   //col  (48,52,56,60)
+         1.0f,  1.0f, 0.0f, 1.0f, //pos  (64,68,72,76)
+		0.0f, 0.0f, 1.0f, 1.0f,  //col   (80,84,88,92)
      };
 
 	GLuint shader_program;
@@ -67,8 +64,8 @@ int main()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(trivert), trivert, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*)48);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 32, 0);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 32, (const GLvoid*)16);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
